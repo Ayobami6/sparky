@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from './datasource/typeorm.module';
+import { redisClientFactory } from './utils/redis.client.factory';
+import { RedisService } from './utils/redis.service';
+import { LoggerService } from './logger.service';
 
 @Module({
   imports: [
@@ -13,6 +16,6 @@ import { TypeOrmModule } from './datasource/typeorm.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, redisClientFactory, RedisService, LoggerService],
 })
 export class AppModule {}
