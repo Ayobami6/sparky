@@ -9,8 +9,8 @@ async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  // app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe());
-  app.use(cookieParser());
   const PORT = process.env.PORT || 3000;
   await app.listen(PORT);
   logger.log(`Application is running on:  ${await app.getUrl()}`);
