@@ -11,3 +11,8 @@ export interface Avatar {
 export interface Course {
   courseId: string;
 }
+
+export interface ActivationResponse {
+  token: string;
+  activationCode: string;
+}

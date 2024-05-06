@@ -8,6 +8,8 @@ import { RedisService } from './utils/redis.service';
 import { LoggerService } from './logger.service';
 import { UserController } from './user/user.controller';
 import { AuthController } from './auth/auth.controller';
+import { UserService } from './user/user.service';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -16,8 +18,9 @@ import { AuthController } from './auth/auth.controller';
       envFilePath: [`.env.stage.${process.env.MACHINE}`],
       isGlobal: true,
     }),
+    UserModule,
   ],
   controllers: [AppController, UserController, AuthController],
-  providers: [AppService, redisClientFactory, RedisService, LoggerService],
+  providers: [AppService, redisClientFactory, RedisService, LoggerService, UserService],
 })
 export class AppModule {}

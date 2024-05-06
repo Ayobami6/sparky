@@ -7,6 +7,9 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ type: 'text' })
+  name: string;
+
   @Column({ unique: true })
   email: string;
 
@@ -22,12 +25,12 @@ export class UserEntity {
   })
   role: string;
 
-  @Column()
+  @Column({ nullable: true })
   avatar: Avatar;
 
   @Column({ default: false, type: 'boolean' })
   isVerified: boolean;
 
-  @Column()
+  @Column({ nullable: true })
   courses: Course[];
 }
