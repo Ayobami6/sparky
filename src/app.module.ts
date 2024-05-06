@@ -6,6 +6,8 @@ import { TypeOrmModule } from './datasource/typeorm.module';
 import { redisClientFactory } from './utils/redis.client.factory';
 import { RedisService } from './utils/redis.service';
 import { LoggerService } from './logger.service';
+import { UserController } from './user/user.controller';
+import { AuthController } from './auth/auth.controller';
 
 @Module({
   imports: [
@@ -15,7 +17,7 @@ import { LoggerService } from './logger.service';
       isGlobal: true,
     }),
   ],
-  controllers: [AppController],
+  controllers: [AppController, UserController, AuthController],
   providers: [AppService, redisClientFactory, RedisService, LoggerService],
 })
 export class AppModule {}
