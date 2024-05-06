@@ -23,7 +23,12 @@ export class AppController {
 
   @Get('set')
   async testRedis(@Res() res: Response): Promise<any> {
-    await this.redisService.set('test', 'test');
-    res.status(HttpStatus.OK).json(await this.redisService.get('test'));
+    try {
+      await this.redisService.set('test', 'test');
+      res.status(HttpStatus.OK).json(await this.redisService.get('test'));
+    } catch (error) {
+      this.loggerService.error(error.message, error.stack);
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(error.message);
+    }
   }
 }
