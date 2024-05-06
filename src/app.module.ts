@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from './datasource/typeorm.module';
 
 @Module({
   imports: [
+    TypeOrmModule,
     ConfigModule.forRoot({
       envFilePath: [`.env.stage.${process.env.MACHINE}`],
       isGlobal: true,
