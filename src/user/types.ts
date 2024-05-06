@@ -16,3 +16,8 @@ export interface ActivationResponse {
   token: string;
   activationCode: string;
 }
+
+export interface Message {
+  success: boolean;
+  message: string;
+}

@@ -10,6 +10,8 @@ import { UserController } from './user/user.controller';
 import { AuthController } from './auth/auth.controller';
 import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { EmailService } from './utils/sendmail.service';
 
 @Module({
   imports: [
@@ -19,8 +21,16 @@ import { UserModule } from './user/user.module';
       isGlobal: true,
     }),
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController, UserController, AuthController],
-  providers: [AppService, redisClientFactory, RedisService, LoggerService, UserService],
+  providers: [
+    AppService,
+    redisClientFactory,
+    RedisService,
+    LoggerService,
+    UserService,
+    EmailService,
+  ],
 })
 export class AppModule {}
