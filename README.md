@@ -1,2 +1,1 @@
-# sparky
-E-learning platform
+## Sparky E-learning app
