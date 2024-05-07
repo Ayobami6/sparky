@@ -12,6 +12,7 @@ import { UserService } from './user/user.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { EmailService } from './utils/sendmail.service';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { EmailService } from './utils/sendmail.service';
     LoggerService,
     UserService,
     EmailService,
+    AuthService,
   ],
 })
 export class AppModule {}

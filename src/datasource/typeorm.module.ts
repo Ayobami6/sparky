@@ -17,7 +17,7 @@ import { Logger } from '@nestjs/common';
             type: 'mongodb',
             url: configService.get('DB_URL'),
             synchronize: true,
-            useUnifiedTopology: true,
+            // useUnifiedTopology: true,
             entities: [`${__dirname}/../**/**.entity{.ts,.js}`],
           });
           await dataSource.initialize(); // initialize the data source

@@ -1,11 +1,17 @@
 import { Exclude } from 'class-transformer';
-import { Column, Entity, ObjectIdColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ObjectIdColumn,
+  BeforeInsert,
+  ObjectId,
+} from 'typeorm';
 import { RoleEnum, Avatar, Course } from './types';
 
 @Entity('user')
 export class UserEntity {
   @ObjectIdColumn()
-  _id: string;
+  _id: ObjectId;
 
   @Column({ type: 'text' })
   name: string;
@@ -33,4 +39,18 @@ export class UserEntity {
 
   @Column({ nullable: true })
   courses: Course[];
+
+  @Column({ default: new Date() })
+  createdAt: Date;
+
+  @Column({ default: new Date() })
+  updatedAt: Date;
+
+  @BeforeInsert()
+  updateTimestamp() {
+    this.updatedAt = new Date();
+    if (!this.createdAt) {
+      this.createdAt = new Date();
+    }
+  }
 }

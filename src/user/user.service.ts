@@ -9,7 +9,7 @@ import { DataSource } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { CreateUserDto } from './dto/create-use.dto';
 import * as bcrypt from 'bcrypt';
-import { ActivationResponse, Message } from './types';
+import { ActivationResponse, Message, RoleEnum } from './types';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import path from 'path';
@@ -46,7 +46,7 @@ export class UserService {
       const activationCode = activationToken.activationCode;
       const data = { user: { name: user.name }, activationCode };
       const html = await ejs.renderFile(
-        path.join(__dirname, '../mails/activation-mail.ejs'),
+        path.join(__dirname, '../utils/mails/activation-mail.ejs'),
         data,
       );
       try {
@@ -113,12 +113,14 @@ export class UserService {
         name,
         email,
         password,
+        role: RoleEnum.user,
+        isVerified: false,
       });
-      await this.userRepository.save(user);
+      const savedUser = await this.userRepository.save(user);
       return {
         success: true,
         message: 'User created successfully',
-        user,
+        user: savedUser,
       };
     } catch (error) {
       this.logger.error(error.message, error.stack);

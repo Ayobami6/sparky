@@ -21,7 +21,7 @@ export class EmailService {
   }
 
   async sendEmail(to: string, subject: string, template: string, data: any) {
-    const templatePath = path.join(__dirname, '../mails', template);
+    const templatePath = path.join(__dirname, './mails', template);
     const html = await ejs.renderFile(templatePath, data);
     const mailOptions = {
       from: this.configService.get('SMTP_USER'),
