@@ -6,6 +6,7 @@ import { DataSource } from 'typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import * as bcrypt from 'bcrypt';
 import { LoggerService } from 'src/logger.service';
+import { RedisService } from 'src/utils/redis.service';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,7 @@ export class AuthService {
     private jwtService: JwtService,
     private dataSource: DataSource,
     private loggerService: LoggerService,
+    private readonly redisService: RedisService,
   ) {
     this.userRepository = this.dataSource.getRepository(UserEntity);
   }
@@ -25,6 +27,7 @@ export class AuthService {
       // find the user
       const user = await this.userRepository.findOne({ email: email });
       if (user && (await bcrypt.compare(password, user.password))) {
+        this.redisService.set(user._id, JSON.stringify(user));
         return this.generateTokens(email);
       } else {
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);

@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res, Version } from '@nestjs/common';
+import { Body, Controller, Inject, Post, Res, Version } from '@nestjs/common';
 import { Response } from 'express';
 import { CreateUserDto } from 'src/user/dto/create-use.dto';
 import { VerificationDto } from 'src/user/dto/verification.dto';
@@ -35,8 +35,27 @@ export class AuthController {
 
   @Version('1')
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto): Promise<LoginResponse> {
+  async login(
+    @Body() loginUserDto: LoginUserDto,
+    @Res() res: Response,
+  ): Promise<any> {
     const loginResponse = await this.authService.loginUser(loginUserDto);
-    return loginResponse;
+    const { accessToken, refreshToken } = loginResponse;
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      path: '/auth/refresh_token',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      path: '/auth/login',
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    });
+    res.status(200).json({
+      success: true,
+      message: 'Login Successful',
+      accessToken,
+      refreshToken,
+    });
   }
 }
