@@ -1,4 +1,11 @@
-import { Controller, Get, HttpStatus, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { AppService } from './app.service';
 import { Response } from 'express';
 import { LoggerService } from './logger.service';
@@ -38,6 +45,13 @@ export class AppController {
   @Get('userinfo')
   @UseGuards(AuthGuard('jwt'))
   async getUserInfo(@GetUser() user: UserEntity): Promise<UserEntity> {
-    return user;
+    try {
+      return user;
+    } catch (error) {
+      console.log(error.code);
+      console.log(error);
+      this.loggerService.error(error.message, error.stack);
+      throw new UnauthorizedException();
+    }
   }
 }

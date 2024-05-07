@@ -5,6 +5,7 @@ import {
   ObjectIdColumn,
   BeforeInsert,
   ObjectId,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { RoleEnum, Avatar, Course } from './types';
 
@@ -12,6 +13,9 @@ import { RoleEnum, Avatar, Course } from './types';
 export class UserEntity {
   @ObjectIdColumn()
   _id: ObjectId;
+
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'text' })
   name: string;

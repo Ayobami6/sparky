@@ -1,4 +1,6 @@
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   InternalServerErrorException,
   Logger,
@@ -16,6 +18,7 @@ import path from 'path';
 import ejs from 'ejs';
 import { EmailService } from 'src/utils/sendmail.service';
 import { VerificationDto } from './dto/verification.dto';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class UserService {
@@ -115,6 +118,7 @@ export class UserService {
         password,
         role: RoleEnum.user,
         isVerified: false,
+        id: uuid(),
       });
       const savedUser = await this.userRepository.save(user);
       return {
@@ -130,5 +134,13 @@ export class UserService {
         message: 'Something went wrong, Try again!',
       });
     }
+  }
+
+  async findUserById(userId: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({ id: userId });
+    if (!user) {
+      throw new HttpException('User Not Found!', HttpStatus.NOT_FOUND);
+    }
+    return user;
   }
 }

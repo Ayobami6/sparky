@@ -58,4 +58,10 @@ export class AuthController {
       refreshToken,
     });
   }
+
+  @Post('refresh')
+  async refreshToken(@Body() body: any): Promise<LoginResponse> {
+    const { refreshToken } = body;
+    return await this.authService.refreshToken(refreshToken);
+  }
 }

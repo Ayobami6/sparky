@@ -43,7 +43,9 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       return user;
     } catch (error) {
       this.loggerService.error(error.message, error);
-      throw new InternalServerErrorException();
+      console.log(error.status);
+      if (error.status === 401) throw new UnauthorizedException();
+      else throw new InternalServerErrorException();
     }
   }
 }
