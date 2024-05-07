@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { LoggerService } from '../logger.service';
 import { UserEntity } from 'src/user/user.entity';
 import { JwtPayload } from './interfaces/jwt.interface';
+import { RedisService } from 'src/utils/redis.service';
 
 interface UserResponse {
   id: number;
@@ -23,6 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     @Inject(DataSource) private dataSource: DataSource,
     private configService: ConfigService,
     private loggerService: LoggerService,
+    private redisService: RedisService,
   ) {
     super({
       secretOrKey: configService.get('JWT_SECRET'),
@@ -34,9 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: JwtPayload): Promise<UserEntity> {
     try {
       const { email } = payload;
-      const user = await this.dataSource
-        .getRepository(UserEntity)
-        .findOne({ where: { email: email } });
+      const user = await this.redisService.get(email);
       if (!user) {
         throw new UnauthorizedException();
       }

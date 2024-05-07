@@ -27,7 +27,7 @@ export class AuthService {
       // find the user
       const user = await this.userRepository.findOne({ email: email });
       if (user && (await bcrypt.compare(password, user.password))) {
-        this.redisService.set(user._id, JSON.stringify(user));
+        this.redisService.set(user.email, JSON.stringify(user));
         return this.generateTokens(email);
       } else {
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
