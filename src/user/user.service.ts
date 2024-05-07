@@ -2,6 +2,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { LoggerService } from 'src/logger.service';
 import { DataSource } from 'typeorm';
@@ -14,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import path from 'path';
 import ejs from 'ejs';
 import { EmailService } from 'src/utils/sendmail.service';
+import { VerificationDto } from './dto/verification.dto';
 
 @Injectable()
 export class UserService {
@@ -35,11 +37,11 @@ export class UserService {
       const { name, email, password } = createUserDto;
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(password, salt);
-      const user = await this.userRepository.create({
+      const user = {
         name,
         email,
         password: hashedPassword,
-      });
+      };
       const activationToken = this.createActivationToken(user);
       const activationCode = activationToken.activationCode;
       const data = { user: { name: user.name }, activationCode };
@@ -57,6 +59,7 @@ export class UserService {
         return {
           success: true,
           message: `Activation has been sent to your email ${user.email}`,
+          activationToken: activationToken.token,
         };
       } catch (err) {
         this.logger.error(err.message, err.stack);
@@ -75,7 +78,7 @@ export class UserService {
       });
     }
   }
-  createActivationToken(user: UserEntity): ActivationResponse {
+  createActivationToken(user: any): ActivationResponse {
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const token = this.jwtService.sign(
       {
@@ -83,12 +86,47 @@ export class UserService {
         activationCode,
       },
       {
-        expiresIn: '5m',
+        expiresIn: '10m',
       },
     );
     return {
       token,
       activationCode,
     };
+  }
+
+  async verifyActivationCode(verificationDto: VerificationDto): Promise<any> {
+    try {
+      const { activation_code, activationToken } = verificationDto;
+      const verifyUser = this.jwtService.verify(activationToken);
+      console.log(verifyUser.activationCode, activation_code);
+      if (Number(verifyUser.activationCode) !== Number(activation_code)) {
+        throw new UnauthorizedException('Invalid activation code');
+      }
+      const { email, password, name } = verifyUser.user;
+      const existUser = await this.userRepository.findOne({ email: email });
+      console.log(existUser);
+      if (existUser) {
+        throw new UnauthorizedException('User already exist');
+      }
+      const user = await this.userRepository.create({
+        name,
+        email,
+        password,
+      });
+      await this.userRepository.save(user);
+      return {
+        success: true,
+        message: 'User created successfully',
+        user,
+      };
+    } catch (error) {
+      this.logger.error(error.message, error.stack);
+      this.loggerService.error(error.message, error);
+      throw new InternalServerErrorException({
+        success: false,
+        message: 'Something went wrong, Try again!',
+      });
+    }
   }
 }
