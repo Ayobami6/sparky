@@ -40,7 +40,18 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       if (!user) {
         throw new UnauthorizedException();
       }
-      return user;
+      const parsedUser = JSON.parse(user);
+      const userObj = {
+        id: parsedUser.id,
+        email: parsedUser.email,
+        name: parsedUser.name,
+        avatar: parsedUser.avatar,
+        isVerified: parsedUser.isVerified,
+        courses: parsedUser.courses,
+        createdAt: parsedUser.createdAt,
+        role: parsedUser.role,
+      };
+      return userObj;
     } catch (error) {
       this.loggerService.error(error.message, error);
       console.log(error.status);

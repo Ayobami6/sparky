@@ -44,7 +44,7 @@ export class AppController {
   }
   @Get('userinfo')
   @UseGuards(AuthGuard('jwt'))
-  async getUserInfo(@GetUser() user: UserEntity): Promise<UserEntity> {
+  async getUserInfo(@GetUser() user: any): Promise<UserEntity> {
     try {
       return user;
     } catch (error) {
