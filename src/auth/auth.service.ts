@@ -63,8 +63,10 @@ export class AuthService {
           id: uuid(),
         });
         this.userRepository.save(user);
+        this.redisService.set(user.email, JSON.stringify(user));
         return this.generateTokens(email, user.id);
       }
+      this.redisService.set(user.email, JSON.stringify(user));
       return this.generateTokens(email, user.id);
     } catch (error) {
       this.loggerService.error(error.message, error);

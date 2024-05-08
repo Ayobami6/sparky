@@ -19,6 +19,8 @@ import ejs from 'ejs';
 import { EmailService } from 'src/utils/sendmail.service';
 import { VerificationDto } from './dto/verification.dto';
 import { v4 as uuid } from 'uuid';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { RedisService } from 'src/utils/redis.service';
 
 @Injectable()
 export class UserService {
@@ -31,6 +33,7 @@ export class UserService {
     private configService: ConfigService,
     private jwtService: JwtService,
     private emailService: EmailService,
+    private redisService: RedisService,
   ) {
     this.userRepository = this.dataSource.getRepository(UserEntity);
   }
@@ -81,6 +84,38 @@ export class UserService {
       });
     }
   }
+
+  async updateUser(updateUserDto: UpdateUserDto, userId: string): Promise<any> {
+    try {
+      const user = await this.findUserById(userId);
+      const { name, avatar } = updateUserDto;
+      if (user) {
+        user.name = name;
+        user.avatar = avatar;
+        await this.userRepository.save(user);
+        this.redisService.set(user.email, JSON.stringify(user));
+        return {
+          success: true,
+          message: 'User updated successfully',
+          user: user,
+        };
+      } else {
+        throw new HttpException(
+          {
+            success: false,
+            message: 'User not found',
+          },
+          HttpStatus.NOT_FOUND,
+        );
+      }
+    } catch (error) {
+      throw new InternalServerErrorException({
+        success: false,
+        message: 'Something went wrong, Try again!',
+      });
+    }
+  }
+
   createActivationToken(user: any): ActivationResponse {
     const activationCode = Math.floor(1000 + Math.random() * 9000).toString();
     const token = this.jwtService.sign(
