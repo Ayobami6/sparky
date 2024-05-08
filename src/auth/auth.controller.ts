@@ -1,6 +1,6 @@
 import { Body, Controller, Inject, Post, Res, Version } from '@nestjs/common';
 import { Response } from 'express';
-import { CreateUserDto } from 'src/user/dto/create-use.dto';
+import { CreateUserDto, SocialAuthDto } from 'src/user/dto/create-use.dto';
 import { VerificationDto } from 'src/user/dto/verification.dto';
 import { Message } from 'src/user/types';
 import { UserEntity } from 'src/user/user.entity';
@@ -63,5 +63,12 @@ export class AuthController {
   async refreshToken(@Body() body: any): Promise<LoginResponse> {
     const { refreshToken } = body;
     return await this.authService.refreshToken(refreshToken);
+  }
+
+  @Post('social-auth')
+  async socialAuth(
+    @Body() socialAuthDto: SocialAuthDto,
+  ): Promise<LoginResponse> {
+    return this.authService.socialAuth(socialAuthDto);
   }
 }

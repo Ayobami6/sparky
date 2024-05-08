@@ -29,3 +29,15 @@ export class CreateUserDto {
   @IsOptional()
   avatar: Avatar;
 }
+
+export class SocialAuthDto {
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
+  @IsNotEmpty()
+  @IsString()
+  name: string;
+
+  @IsOptional()
+  avatar: Avatar;
+}

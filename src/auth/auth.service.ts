@@ -9,6 +9,9 @@ import { LoggerService } from 'src/logger.service';
 import { RedisService } from 'src/utils/redis.service';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/user/user.service';
+import { SocialAuthDto } from 'src/user/dto/create-use.dto';
+import { RoleEnum } from 'src/user/types';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AuthService {
@@ -36,6 +39,33 @@ export class AuthService {
       } else {
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
       }
+    } catch (error) {
+      this.loggerService.error(error.message, error);
+      this.logger.error(error.message, error.stack);
+      throw new HttpException(
+        'Something went wrong',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async socialAuth(socialAuthDto: SocialAuthDto): Promise<LoginResponse> {
+    try {
+      const { email, name, avatar } = socialAuthDto;
+      const user = await this.userRepository.findOne({ email: email });
+      if (!user) {
+        const user = await this.userRepository.create({
+          name,
+          email,
+          avatar,
+          role: RoleEnum.user,
+          isVerified: false,
+          id: uuid(),
+        });
+        this.userRepository.save(user);
+        return this.generateTokens(email, user.id);
+      }
+      return this.generateTokens(email, user.id);
     } catch (error) {
       this.loggerService.error(error.message, error);
       this.logger.error(error.message, error.stack);

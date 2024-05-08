@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
   //   validate
-  async validate(payload: JwtPayload): Promise<UserEntity> {
+  async validate(payload: JwtPayload): Promise<any> {
     try {
       const { email } = payload;
       const user = await this.redisService.get(email);
