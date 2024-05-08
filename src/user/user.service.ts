@@ -21,6 +21,7 @@ import { VerificationDto } from './dto/verification.dto';
 import { v4 as uuid } from 'uuid';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RedisService } from 'src/utils/redis.service';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Injectable()
 export class UserService {
@@ -109,6 +110,41 @@ export class UserService {
         );
       }
     } catch (error) {
+      this.logger.error(error.message, error.stack);
+      this.loggerService.error(error.message, error);
+      throw new InternalServerErrorException({
+        success: false,
+        message: 'Something went wrong, Try again!',
+      });
+    }
+  }
+
+  async changePassword(
+    userId: string,
+    updatePasswordDto: ChangePasswordDto,
+  ): Promise<Message> {
+    try {
+      const user = await this.findUserById(userId);
+      const { oldPassword, newPassword } = updatePasswordDto;
+      if (user && (await bcrypt.compare(oldPassword, user.password))) {
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(newPassword, salt);
+        user.password = hashedPassword;
+        await this.userRepository.save(user);
+        this.redisService.set(user.email, JSON.stringify(user));
+        return {
+          success: true,
+          message: 'Password updated successfully',
+        };
+      } else {
+        throw new HttpException('Incorrect Old password', 400);
+      }
+    } catch (error) {
+      this.logger.error(error.message, error.stack);
+      this.loggerService.error(error.message, error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
       throw new InternalServerErrorException({
         success: false,
         message: 'Something went wrong, Try again!',
