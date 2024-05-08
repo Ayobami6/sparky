@@ -21,7 +21,7 @@ import { RedisService } from 'src/utils/redis.service';
       useFactory: async (config: ConfigService) => {
         return {
           secret: config.get('JWT_SECRET'),
-          sigOptions: {
+          signOptions: {
             expiresIn: 3600,
           },
         };
