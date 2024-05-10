@@ -42,7 +42,7 @@ export class UserEntity {
   isVerified: boolean;
 
   @Column({ nullable: true })
-  courses: Course[];
+  courses: string[];
 
   @Column({ default: new Date() })
   createdAt: Date;

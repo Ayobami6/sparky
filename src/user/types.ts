@@ -21,7 +21,8 @@ export interface ActivationResponse {
 
 export interface Message {
   success: boolean;
-  message: string;
+  message?: string;
   activationToken?: string;
   user?: UserEntity;
+  data?: any;
 }

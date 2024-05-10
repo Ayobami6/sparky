@@ -10,6 +10,10 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { v4 as uuid } from 'uuid';
 import { EditCourseDto } from './dto/editcourse.dto';
+import { UserEntity } from 'src/user/user.entity';
+import { Message } from 'src/user/types';
+import { QuestionDto } from './dto/add-question.dto';
+import { Question } from './course-types';
 
 @Injectable()
 export class CourseService {
@@ -125,6 +129,55 @@ export class CourseService {
         throw new NotFoundException(`Course ${id} not found`);
       }
       return course;
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  async getCourse(courseId: string, user: UserEntity): Promise<Message> {
+    try {
+      const userCourses = user.courses;
+      if (!userCourses)
+        throw new NotFoundException(`You've not enrolled in this course`);
+      if (userCourses.includes(courseId)) {
+        const course = await this.findCourseById(courseId);
+        return {
+          success: true,
+          data: course.courseData,
+        };
+      } else {
+        throw new NotFoundException(`You've not enrolled in this course`);
+      }
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  async addQuestion(
+    questionDto: QuestionDto,
+    user: UserEntity,
+  ): Promise<Message> {
+    try {
+      const { courseId, question, contentId } = questionDto;
+      const course = await this.findCourseById(courseId);
+      course.courseData.map((courseData) => {
+        if (courseData.id === contentId) {
+          const questionObj: Question = {
+            user,
+            text: question,
+            replies: [],
+          };
+          if (!courseData.questions) {
+            courseData.questions = [];
+          }
+          courseData.questions.push(questionObj);
+        }
+      });
+      await this.courseRepo.save(course);
+      return {
+        success: true,
+        data: course,
+      };
     } catch (error) {
       this.errorException.throwError(error);
     }

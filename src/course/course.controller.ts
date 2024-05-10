@@ -14,6 +14,9 @@ import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
 import { EditCourseDto } from './dto/editcourse.dto';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { UserEntity } from 'src/user/user.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { Message } from 'src/user/types';
+import { QuestionDto } from './dto/add-question.dto';
 
 @Controller('course')
 export class CourseController {
@@ -44,5 +47,23 @@ export class CourseController {
   @Get('')
   async getAllCourses(): Promise<CourseEntity[]> {
     return await this.courseService.allCourses();
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Get('ca/:id')
+  async findCourseById(
+    @Param('id') id: string,
+    @GetUser() user: UserEntity,
+  ): Promise<Message> {
+    return await this.courseService.getCourse(id, user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('q/add')
+  async addQuestion(
+    @Body() questionDto: QuestionDto,
+    @GetUser() user: UserEntity,
+  ): Promise<Message> {
+    return await this.courseService.addQuestion(questionDto, user);
   }
 }
