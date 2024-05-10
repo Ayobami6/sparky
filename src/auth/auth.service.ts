@@ -77,7 +77,12 @@ export class AuthService {
   }
   private generateTokens(email: string, userId: any): LoginResponse {
     const accessToken = this.jwtService.sign({ email });
-    const refreshToken = this.jwtService.sign({ userId });
+    const refreshToken = this.jwtService.sign(
+      { userId },
+      {
+        expiresIn: '7d',
+      },
+    );
     return { accessToken, refreshToken };
   }
 
