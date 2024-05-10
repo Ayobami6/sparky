@@ -39,6 +39,11 @@ export interface CourseContent {
   questions: Question[];
 }
 
+export interface Thumbnail {
+  public_id: string;
+  url: string;
+}
+
 export interface Course {
   name: string;
   description: string;

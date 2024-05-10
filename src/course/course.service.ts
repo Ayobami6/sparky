@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ErrorException } from 'src/utils/error-exceptions';
 import { CourseEntity } from './course.entity';
@@ -9,6 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { v4 as uuid } from 'uuid';
+import { EditCourseDto } from './dto/editcourse.dto';
 
 @Injectable()
 export class CourseService {
@@ -35,7 +36,7 @@ export class CourseService {
         });
         createCourseDto.thumbnail = {
           public_id: response.public_id,
-          secure_url: response.secure_url,
+          url: response.secure_url,
         };
       }
       createCourseDto.id = uuid();
@@ -44,6 +45,43 @@ export class CourseService {
       });
       const course = this.courseRepo.create(createCourseDto);
       return await this.courseRepo.save(course);
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  async editCourse(
+    id: string,
+    editCourseDto: EditCourseDto,
+  ): Promise<CourseEntity> {
+    try {
+      const thumbnail = editCourseDto.thumbnail;
+      if (thumbnail) {
+        await this.cloudinaryService.delete(thumbnail?.public_id);
+
+        const response = await this.cloudinaryService.upload(thumbnail, {
+          folder: 'courses',
+        });
+        editCourseDto.thumbnail = {
+          public_id: response.public_id,
+          url: response.secure_url,
+        };
+      }
+      const course = await this.findCourseById(id);
+      const updatedCourse = this.courseRepo.merge(course, editCourseDto);
+      return await this.courseRepo.save(updatedCourse);
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  async findCourseById(id: string): Promise<CourseEntity> {
+    try {
+      const course = await this.courseRepo.findOne({ id });
+      if (!course) {
+        throw new NotFoundException(`Course ${id} not found`);
+      }
+      return course;
     } catch (error) {
       this.errorException.throwError(error);
     }

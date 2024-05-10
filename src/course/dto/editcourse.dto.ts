@@ -15,30 +15,27 @@ import {
   Thumbnail,
 } from '../course-types';
 
-export class CreateCourseDto implements Course {
-  @IsNotEmpty()
+export class EditCourseDto {
+  @IsOptional()
   @IsString()
   name: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   description: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   price: number;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsInt()
   estimatedPrice: number;
 
   @IsOptional()
-  id: string;
-
-  @IsOptional()
   thumbnail?: Thumbnail;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   level: string;
 
@@ -46,7 +43,7 @@ export class CreateCourseDto implements Course {
   @IsString({ each: true })
   tags: string[];
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   demoUrl: string;
 
@@ -54,16 +51,16 @@ export class CreateCourseDto implements Course {
   @IsArray()
   reviews: Review[];
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
   benefits: Benefit[];
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsArray()
   prerequisites: Benefit[];
 
   @IsArray()
-  @IsNotEmpty()
+  @IsOptional()
   courseData: CourseContent[];
 
   @IsOptional()
@@ -73,7 +70,4 @@ export class CreateCourseDto implements Course {
   @IsOptional()
   @IsNumber()
   purchased?: number;
-
-  @IsNotEmpty()
-  instructor: Instructor;
 }
