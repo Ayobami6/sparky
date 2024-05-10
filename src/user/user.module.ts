@@ -10,10 +10,12 @@ import { EmailService } from 'src/utils/sendmail.service';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { redisClientFactory } from 'src/utils/redis.client.factory';
 import { RedisService } from 'src/utils/redis.service';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
     TypeOrmModule,
+    CloudinaryModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       imports: [ConfigModule],

@@ -1,3 +1,5 @@
+import { UserEntity } from './user.entity';
+
 export enum RoleEnum {
   user = 'user',
   admin = 'admin',
@@ -21,4 +23,5 @@ export interface Message {
   success: boolean;
   message: string;
   activationToken?: string;
+  user?: UserEntity;
 }

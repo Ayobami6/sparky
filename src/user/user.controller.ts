@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Put,
+  UseGuards,
+  UploadedFile,
+  UseInterceptors,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
 import { GetUser } from 'src/auth/get-user.decorator';
@@ -6,6 +15,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Message } from './types';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
@@ -17,7 +27,7 @@ export class UserController {
     return await this.userService.findUserById(user.id);
   }
 
-  @Post('user-update')
+  @Put('user-update')
   async updateUser(
     @GetUser() user: UserEntity,
     @Body() updateUserDto: UpdateUserDto,
@@ -25,11 +35,20 @@ export class UserController {
     return await this.userService.updateUser(updateUserDto, user.id);
   }
 
-  @Post('change-password')
+  @Put('change-password')
   async changePassword(
     @GetUser() user: UserEntity,
     @Body() updatePasswordDto: ChangePasswordDto,
   ): Promise<Message> {
     return await this.userService.changePassword(user.id, updatePasswordDto);
+  }
+  @Put('change-avatar')
+  // @UseInterceptors(FileInterceptor('file'))
+  async changeAvatar(
+    @GetUser() user: UserEntity,
+    @Body() avatarBody: any,
+  ): Promise<Message> {
+    const { avatar } = avatarBody;
+    return await this.userService.changeAvatar(user.id, avatar);
   }
 }

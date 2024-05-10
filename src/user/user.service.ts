@@ -4,6 +4,7 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { LoggerService } from 'src/logger.service';
@@ -11,7 +12,7 @@ import { DataSource } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { CreateUserDto } from './dto/create-use.dto';
 import * as bcrypt from 'bcrypt';
-import { ActivationResponse, Message, RoleEnum } from './types';
+import { ActivationResponse, Avatar, Message, RoleEnum } from './types';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import path from 'path';
@@ -22,11 +23,15 @@ import { v4 as uuid } from 'uuid';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RedisService } from 'src/utils/redis.service';
 import { ChangePasswordDto } from './dto/change-password.dto';
+import cloudinary from 'cloudinary';
+import { ErrorException } from 'src/utils/error-exceptions';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class UserService {
   private logger = new Logger();
   private userRepository;
+  private errorException = new ErrorException();
 
   constructor(
     private loggerService: LoggerService,
@@ -35,6 +40,7 @@ export class UserService {
     private jwtService: JwtService,
     private emailService: EmailService,
     private redisService: RedisService,
+    private cloudinaryService: CloudinaryService,
   ) {
     this.userRepository = this.dataSource.getRepository(UserEntity);
   }
@@ -149,6 +155,53 @@ export class UserService {
         success: false,
         message: 'Something went wrong, Try again!',
       });
+    }
+  }
+
+  async changeAvatar(userId: string, avatar: string): Promise<Message> {
+    try {
+      if (!avatar) {
+        throw new HttpException('Avatar is required', 400);
+      }
+      const user = await this.findUserById(userId);
+      if (user) {
+        if (user?.avatar?.publicUrl) {
+          // delete from cloudinary
+          await this.cloudinaryService.delete(user?.avatar?.publicUrl);
+        } else {
+          const upload = this.cloudinaryService.upload(avatar, {
+            folder: 'avatars',
+            width: 150,
+          });
+          user.avatar = {
+            publicUrl: (await upload).public_id,
+            url: (await upload).secure_url,
+          };
+          await this.userRepository.save(user);
+          this.redisService.set(user.email, JSON.stringify(user));
+          return {
+            success: true,
+            message: 'Avatar updated successfully',
+            user: user,
+          };
+        }
+      } else {
+        throw new NotFoundException('User not found');
+      }
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      } else if (error instanceof HttpException) {
+        throw error;
+      } else {
+        this.logger.error(error.message, error.stack);
+        this.loggerService.error(error.message, error);
+        throw new InternalServerErrorException({
+          success: false,
+          message: 'Something went wrong, Try again!',
+        });
+      }
+      // this.errorException.throwError(error);
     }
   }
 

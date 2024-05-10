@@ -13,6 +13,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { EmailService } from './utils/sendmail.service';
 import { AuthService } from './auth/auth.service';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -23,6 +25,7 @@ import { AuthService } from './auth/auth.service';
     }),
     UserModule,
     AuthModule,
+    CloudinaryModule,
   ],
   controllers: [AppController, UserController, AuthController],
   providers: [
@@ -33,6 +36,7 @@ import { AuthService } from './auth/auth.service';
     UserService,
     EmailService,
     AuthService,
+    CloudinaryService,
   ],
 })
 export class AppModule {}

@@ -12,11 +12,13 @@ import { UserService } from 'src/user/user.service';
 import { SocialAuthDto } from 'src/user/dto/create-use.dto';
 import { RoleEnum } from 'src/user/types';
 import { v4 as uuid } from 'uuid';
+import { ErrorException } from 'src/utils/error-exceptions';
 
 @Injectable()
 export class AuthService {
   private userRepository;
   private logger = new Logger();
+  private errorExceptions = new ErrorException();
   constructor(
     private jwtService: JwtService,
     private dataSource: DataSource,
@@ -41,11 +43,7 @@ export class AuthService {
       }
     } catch (error) {
       this.loggerService.error(error.message, error);
-      this.logger.error(error.message, error.stack);
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      this.errorExceptions.throwError(error);
     }
   }
 

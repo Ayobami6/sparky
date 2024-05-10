@@ -5,7 +5,6 @@ import { ConfigService } from '@nestjs/config';
 export const redisClientFactory: FactoryProvider<Redis> = {
   provide: 'RedisClient',
   useFactory: (configService: ConfigService) => {
-    console.log(configService.get('REDIS_URL'));
     const redisInstance = new Redis(configService.get('REDIS_URL'));
 
     redisInstance.on('error', (e) => {
