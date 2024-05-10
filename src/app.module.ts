@@ -15,6 +15,7 @@ import { EmailService } from './utils/sendmail.service';
 import { AuthService } from './auth/auth.service';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     UserModule,
     AuthModule,
     CloudinaryModule,
+    CourseModule,
   ],
   controllers: [AppController, UserController, AuthController],
   providers: [
