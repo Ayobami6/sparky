@@ -79,12 +79,17 @@ export class CourseService {
   async getCourseForAll(id: string): Promise<CourseEntity> {
     try {
       const course = await this.findCourseById(id);
+      const cachedCourse = await this.redisService.get(id);
+      if (cachedCourse) {
+        return JSON.parse(cachedCourse);
+      }
       course.courseData.map((course) => {
         delete course.videoUrl;
         delete course.suggestion;
         delete course.questions;
         delete course.links;
       });
+      await this.redisService.set(id, JSON.stringify(course));
       return course;
     } catch (error) {
       this.errorException.throwError(error);
@@ -94,7 +99,10 @@ export class CourseService {
   async allCourses(): Promise<CourseEntity[]> {
     try {
       const courses = await this.courseRepo.find();
-      console.log(courses);
+      const cached = await this.redisService.get('courses');
+      if (cached) {
+        return JSON.parse(cached);
+      }
       courses.map((course) => {
         course.courseData.map((courseData) => {
           delete courseData.videoUrl;
@@ -103,7 +111,7 @@ export class CourseService {
           delete courseData.links;
         });
       });
-
+      await this.redisService.set('courses', JSON.stringify(courses));
       return courses;
     } catch (error) {
       this.errorException.throwError(error);
