@@ -1,4 +1,12 @@
-import { Body, Controller, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CourseEntity } from './course.entity';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -26,5 +34,15 @@ export class CourseController {
     @Param('id') id: string,
   ): Promise<CourseEntity> {
     return await this.courseService.editCourse(id, editCourseDto);
+  }
+
+  @Get(':id')
+  async getCourseForAllUsers(@Param('id') id: string): Promise<CourseEntity> {
+    return await this.courseService.getCourseForAll(id);
+  }
+
+  @Get('')
+  async getAllCourses(): Promise<CourseEntity[]> {
+    return await this.courseService.allCourses();
   }
 }

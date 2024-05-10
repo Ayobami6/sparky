@@ -24,7 +24,7 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
         return {
           secret: config.get('JWT_SECRET'),
           signOptions: {
-            expiresIn: 900,
+            expiresIn: 3600,
           },
         };
       },

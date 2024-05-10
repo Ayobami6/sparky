@@ -27,7 +27,7 @@ export interface Instructor {
 }
 
 export interface CourseContent {
-  id: string;
+    id?: string;
   title: string;
   description: string;
   videoUrl: string;

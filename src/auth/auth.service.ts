@@ -90,7 +90,6 @@ export class AuthService {
     const userInfo = this.jwtService.verify(refreshToken);
     const { userId } = userInfo;
     const user = await this.userService.findUserById(userId);
-    console.log(user);
     return this.generateTokens(user.email, user.id);
   }
 }

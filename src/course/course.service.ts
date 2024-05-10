@@ -68,8 +68,43 @@ export class CourseService {
         };
       }
       const course = await this.findCourseById(id);
+      delete editCourseDto.courseData;
       const updatedCourse = this.courseRepo.merge(course, editCourseDto);
       return await this.courseRepo.save(updatedCourse);
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  async getCourseForAll(id: string): Promise<CourseEntity> {
+    try {
+      const course = await this.findCourseById(id);
+      course.courseData.map((course) => {
+        delete course.videoUrl;
+        delete course.suggestion;
+        delete course.questions;
+        delete course.links;
+      });
+      return course;
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  async allCourses(): Promise<CourseEntity[]> {
+    try {
+      const courses = await this.courseRepo.find();
+      console.log(courses);
+      courses.map((course) => {
+        course.courseData.map((courseData) => {
+          delete courseData.videoUrl;
+          delete courseData.suggestion;
+          delete courseData.questions;
+          delete courseData.links;
+        });
+      });
+
+      return courses;
     } catch (error) {
       this.errorException.throwError(error);
     }
