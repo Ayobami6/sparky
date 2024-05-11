@@ -15,7 +15,10 @@ import { ConfigService } from '@nestjs/config';
 import { RedisService } from 'src/utils/redis.service';
 import { EmailService } from 'src/utils/sendmail.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { NotificationEntity } from 'src/notification/notification.entity';
+import {
+  NotificationEntity,
+  Status,
+} from 'src/notification/notification.entity';
 import { ErrorException } from 'src/utils/error-exceptions';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { CourseService } from 'src/course/course.service';
@@ -115,6 +118,7 @@ export class OrderService {
         userId: user.id,
         title: 'New Course Order',
         message: `You have new order for ${course.name}`,
+        status: Status.UNREAD,
       });
       await this.notificationRepo.save(notification);
       if (course.purchased) {

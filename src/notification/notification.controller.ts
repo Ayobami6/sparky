@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Put, UseGuards } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
 import { Message } from 'src/user/types';
@@ -9,7 +9,16 @@ export class NotificationController {
   constructor(private notificationService: NotificationService) {}
 
   @Get('all')
-  getAllNotifications(): Promise<Message> {
-    return this.notificationService.getAllNotifications();
+  async getAllNotifications(): Promise<Message> {
+    return await this.notificationService.getAllNotifications();
+  }
+
+  @Put('/read/:id')
+  async updateNotificationStatus(
+    @Param('id') notificationId: string,
+  ): Promise<Message> {
+    return await this.notificationService.updateNotificationStatus(
+      notificationId,
+    );
   }
 }

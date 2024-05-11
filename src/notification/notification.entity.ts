@@ -9,7 +9,7 @@ import {
 
 import { v4 as uuid } from 'uuid';
 
-enum Status {
+export enum Status {
   UNREAD = 'UNREAD',
   READ = 'READ',
   DELETED = 'DELETED',
