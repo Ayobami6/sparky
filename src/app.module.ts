@@ -16,6 +16,9 @@ import { AuthService } from './auth/auth.service';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CourseModule } from './course/course.module';
+import { OrderModule } from './order/order.module';
+import { OrderService } from './order/order.service';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -28,6 +31,8 @@ import { CourseModule } from './course/course.module';
     AuthModule,
     CloudinaryModule,
     CourseModule,
+    OrderModule,
+    NotificationModule,
   ],
   controllers: [AppController, UserController, AuthController],
   providers: [
@@ -38,6 +43,7 @@ import { CourseModule } from './course/course.module';
     UserService,
     EmailService,
     AuthService,
+    OrderService,
     CloudinaryService,
   ],
 })
