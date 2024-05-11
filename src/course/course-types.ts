@@ -1,7 +1,10 @@
+import { UserEntity } from 'src/user/user.entity';
+
 export interface Question {
-  user: object;
+  user: UserEntity;
   text: string;
   replies?: Question[];
+  id?: string;
 }
 
 export interface Link {

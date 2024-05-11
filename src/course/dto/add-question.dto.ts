@@ -13,3 +13,21 @@ export class QuestionDto {
   @IsString()
   contentId: string;
 }
+
+export class QuestionReplyDto {
+  @IsNotEmpty()
+  @IsString()
+  reply: string;
+
+  @IsNotEmpty()
+  @IsString()
+  questionId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  contentId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  courseId: string;
+}

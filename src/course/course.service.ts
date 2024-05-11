@@ -12,8 +12,11 @@ import { v4 as uuid } from 'uuid';
 import { EditCourseDto } from './dto/editcourse.dto';
 import { UserEntity } from 'src/user/user.entity';
 import { Message } from 'src/user/types';
-import { QuestionDto } from './dto/add-question.dto';
+import { QuestionDto, QuestionReplyDto } from './dto/add-question.dto';
 import { Question } from './course-types';
+import ejs from 'ejs';
+import path from 'path';
+import { EmailService } from 'src/utils/sendmail.service';
 
 @Injectable()
 export class CourseService {
@@ -26,6 +29,7 @@ export class CourseService {
     private loggerService: LoggerService,
     private configService: ConfigService,
     private cloudinaryService: CloudinaryService,
+    private emailService: EmailService,
   ) {
     this.courseRepo = this.dataSource.getRepository(CourseEntity);
   }
@@ -166,6 +170,7 @@ export class CourseService {
             user,
             text: question,
             replies: [],
+            id: uuid(),
           };
           if (!courseData.questions) {
             courseData.questions = [];
@@ -174,6 +179,63 @@ export class CourseService {
         }
       });
       await this.courseRepo.save(course);
+      return {
+        success: true,
+        data: course,
+      };
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  async replyQuestion(
+    questionReplyDto: QuestionReplyDto,
+    user: UserEntity,
+  ): Promise<Message> {
+    try {
+      const { courseId, questionId, reply, contentId } = questionReplyDto;
+      const course = await this.findCourseById(courseId);
+      const courseContent = course.courseData.find(
+        (courseData) => courseData.id === contentId,
+      );
+      if (!courseContent) {
+        throw new NotFoundException(`Content not found`);
+      }
+      const question = courseContent.questions.find(
+        (question) => question.id === questionId,
+      );
+      if (!question) {
+        throw new NotFoundException(`Question not found`);
+      }
+      const replyObj = {
+        user,
+        text: reply,
+        id: uuid(),
+      };
+      question.replies.push(replyObj);
+      await this.courseRepo.save(course);
+      if (user.id === question.user.id) {
+        // create a notification
+      } else {
+        const data = {
+          name: question.user.name,
+          title: courseContent.title,
+        };
+        const html = await ejs.renderFile(
+          path.join(__dirname, '../utils/mails/reply.ejs'),
+          data,
+        );
+        try {
+          await this.emailService.sendEmail(
+            question.user.email,
+            'Reply to your question',
+            'reply.ejs',
+            data,
+          );
+        } catch (error) {
+          this.errorException.throwError(error);
+        }
+      }
       return {
         success: true,
         data: course,

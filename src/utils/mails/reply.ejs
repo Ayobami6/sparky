@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sparky E-learning Activation Email</title>
+    <style>
+      /* Basic styling for the email */
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      .email-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        text-align: center;
+        padding: 20px 0;
+        border-bottom: 1px solid #e5e5e5;
+      }
+      .main-content {
+        padding: 20px 0;
+      }
+      .footer {
+        text-align: center;
+        padding: 20px 0;
+        border-top: 1px solid #e5e5e5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="email-container">
+      <h1>Hello <%= name %>,</h1>
+      <p>
+        New Reply has been added to your question in video <%= title %>, Kindly
+        login to your account to respond.
+      </p>
+      <p>
+        Thanks,
+        <br />
+        Sparky E-learning
+      </p>
+    </div>
+  </body>
+</html>
