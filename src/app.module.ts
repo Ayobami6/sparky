@@ -19,6 +19,7 @@ import { CourseModule } from './course/course.module';
 import { OrderModule } from './order/order.module';
 import { OrderService } from './order/order.service';
 import { NotificationModule } from './notification/notification.module';
+import { CourseService } from './course/course.service';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { NotificationModule } from './notification/notification.module';
     AuthService,
     OrderService,
     CloudinaryService,
+    CourseService,
   ],
 })
 export class AppModule {}

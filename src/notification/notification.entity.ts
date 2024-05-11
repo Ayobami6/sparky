@@ -24,6 +24,9 @@ export class NotificationEntity {
   id: string;
 
   @Column()
+  title: string;
+
+  @Column()
   message: string;
 
   @Column()

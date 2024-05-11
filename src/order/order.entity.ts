@@ -20,6 +20,9 @@ export class OrderEntity {
   courseId: string;
 
   @Column()
+  payment_info: object;
+
+  @Column()
   createdAt: Date;
 
   @Column()

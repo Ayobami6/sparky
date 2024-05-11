@@ -39,6 +39,15 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
     RedisService,
   ],
   controllers: [UserController],
-  exports: [UserService, LoggerService, PassportModule, JwtModule, JwtStrategy],
+  exports: [
+    UserService,
+    LoggerService,
+    PassportModule,
+    JwtModule,
+    JwtStrategy,
+    EmailService,
+    redisClientFactory,
+    RedisService,
+  ],
 })
 export class UserModule {}

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Course Order Confirmation</title>
+  </head>
+  <body style="font-family: Arial, sans-serif">
+    <table style="max-width: 600px; margin: 0 auto; padding: 20px">
+      <tr>
+        <td align="center" style="background-color: #f8f8f8; padding: 20px">
+          <h2>Course Order Confirmation</h2>
+        </td>
+      </tr>
+      <tr>
+        <td style="padding: 20px">
+          <p>Dear <%= username %>,</p>
+          <p>
+            Thank you for purchasing our course! Below are the details of your
+            order:
+          </p>
+          <ul>
+            <li><strong>Course:</strong> <%= order.courseName %></li>
+            <li><strong>Order ID:</strong> <%= order.id %></li>
+            <li><strong>Date:</strong> <%= order.date %> </li>
+            <li><strong>Price:</strong> $<%= order.price %> </li>
+          </ul>
+          <p>
+            You can access the course using the following link: [Course Link]
+          </p>
+          <p>
+            If you have any questions or need further assistance, feel free to
+            contact us at sparky-elearning@gmail.com
+          </p>
+          <p>Best regards,<br />Sparky E-learning</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
