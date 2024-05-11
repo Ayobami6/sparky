@@ -117,7 +117,12 @@ export class OrderService {
         message: `You have new order for ${course.name}`,
       });
       await this.notificationRepo.save(notification);
-
+      if (course.purchased) {
+        course.purchased += 1;
+      } else {
+        course.purchased = 1;
+      }
+      await this.courseRepo.save(course);
       return {
         success: true,
         data: orderCreated,
