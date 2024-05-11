@@ -23,11 +23,16 @@ import path from 'path';
 import { EmailService } from 'src/utils/sendmail.service';
 import { AddReviewDTO, ReviewReplyDto } from './dto/add-review.dto';
 import { title } from 'process';
+import {
+  NotificationEntity,
+  Status,
+} from 'src/notification/notification.entity';
 
 @Injectable()
 export class CourseService {
   private errorException = new ErrorException();
   private courseRepo;
+  private notificationRepo;
 
   constructor(
     private dataSource: DataSource,
@@ -38,6 +43,7 @@ export class CourseService {
     private emailService: EmailService,
   ) {
     this.courseRepo = this.dataSource.getRepository(CourseEntity);
+    this.notificationRepo = this.dataSource.getRepository(NotificationEntity);
   }
 
   async uploadCourse(createCourseDto: CreateCourseDto): Promise<CourseEntity> {
@@ -170,7 +176,7 @@ export class CourseService {
     try {
       const { courseId, question, contentId } = questionDto;
       const course = await this.findCourseById(courseId);
-      course.courseData.map((courseData) => {
+      course.courseData.map(async (courseData) => {
         if (courseData.id === contentId) {
           const questionObj: Question = {
             user,
@@ -182,9 +188,18 @@ export class CourseService {
             courseData.questions = [];
           }
           courseData.questions.push(questionObj);
+          await this.courseRepo.save(course);
+          const notification = await this.notificationRepo.create({
+            userId: user.id,
+            title: 'New Question',
+            message: `You have new question in ${courseData.title}`,
+            status: Status.UNREAD,
+          });
+          await this.notificationRepo.save(notification);
+        } else {
+          throw new NotFoundException(`Content not found`);
         }
       });
-      await this.courseRepo.save(course);
       return {
         success: true,
         data: course,
@@ -222,6 +237,13 @@ export class CourseService {
       await this.courseRepo.save(course);
       if (user.id === question.user.id) {
         // create a notification
+        const notification = await this.notificationRepo.create({
+          userId: user.id,
+          title: 'New Question',
+          message: `You have new question reply in ${courseContent.title}`,
+          status: Status.UNREAD,
+        });
+        await this.notificationRepo.save(notification);
       } else {
         const data = {
           name: question.user.name,
@@ -280,10 +302,16 @@ export class CourseService {
         await this.courseRepo.save(course);
         // add notification
         const notification = {
+          userId: user.id,
           title: 'New Course Review Received',
           message: `${user.name} has given a review on ${course.name}`,
+          status: Status.UNREAD,
         };
         // send the notification
+        const notificationCreated =
+          await this.notificationRepo.create(notification);
+        await this.notificationRepo.save(notificationCreated);
+
         return {
           success: true,
           data: course,
