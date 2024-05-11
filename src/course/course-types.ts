@@ -17,6 +17,7 @@ export interface Review {
   rating: number;
   text: string;
   replies?: Question[];
+  id?: string;
 }
 
 export interface Benefit {

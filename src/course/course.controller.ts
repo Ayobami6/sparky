@@ -17,6 +17,7 @@ import { UserEntity } from 'src/user/user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { Message } from 'src/user/types';
 import { QuestionDto, QuestionReplyDto } from './dto/add-question.dto';
+import { AddReviewDTO, ReviewReplyDto } from './dto/add-review.dto';
 
 @Controller('course')
 export class CourseController {
@@ -74,5 +75,25 @@ export class CourseController {
     @GetUser() user: UserEntity,
   ): Promise<Message> {
     return await this.courseService.replyQuestion(questionReplyDto, user);
+  }
+
+  @UseGuards(AuthGuard('jwt'))
+  @Put('review/add/:id')
+  async addReview(
+    @Body() reviewDto: AddReviewDTO,
+    @GetUser() user: UserEntity,
+    @Param('id') id: string,
+  ): Promise<Message> {
+    return await this.courseService.addReview(user, reviewDto, id);
+  }
+
+  @UseGuards(AdminAuthGuard)
+  @Put('review/reply/:id')
+  async editReview(
+    @Body() reviewReplyDto: ReviewReplyDto,
+    @GetUser() user: UserEntity,
+    @Param('id') id: string,
+  ): Promise<Message> {
+    return await this.courseService.addReplyToReview(user, reviewReplyDto, id);
   }
 }

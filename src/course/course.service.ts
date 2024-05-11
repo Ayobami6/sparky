@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ErrorException } from 'src/utils/error-exceptions';
 import { CourseEntity } from './course.entity';
@@ -17,6 +21,8 @@ import { Question } from './course-types';
 import ejs from 'ejs';
 import path from 'path';
 import { EmailService } from 'src/utils/sendmail.service';
+import { AddReviewDTO, ReviewReplyDto } from './dto/add-review.dto';
+import { title } from 'process';
 
 @Injectable()
 export class CourseService {
@@ -236,6 +242,81 @@ export class CourseService {
           this.errorException.throwError(error);
         }
       }
+      return {
+        success: true,
+        data: course,
+      };
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  // add review to course if eligible
+  async addReview(
+    user: UserEntity,
+    addReviewDto: AddReviewDTO,
+    courseId: string,
+  ): Promise<Message> {
+    try {
+      const { rating, review } = addReviewDto;
+      const userCourses = user.courses;
+      if (userCourses.includes(courseId)) {
+        const course = await this.findCourseById(courseId);
+        if (!course.reviews) {
+          course.reviews = [];
+        }
+        course.reviews.push({
+          user,
+          text: review,
+          rating,
+          id: uuid(),
+          replies: [],
+        });
+        let total = 0;
+        course.reviews.map((review) => {
+          total += review.rating;
+        });
+        course.ratings = total / course.reviews.length;
+        await this.courseRepo.save(course);
+        // add notification
+        const notification = {
+          title: 'New Course Review Received',
+          message: `${user.name} has given a review on ${course.name}`,
+        };
+        // send the notification
+        return {
+          success: true,
+          data: course,
+        };
+      } else {
+        throw new UnauthorizedException(
+          'You are eligible to access this course',
+        );
+      }
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
+
+  async addReplyToReview(
+    user: UserEntity,
+    reviewReplyDto: ReviewReplyDto,
+    courseId,
+  ): Promise<Message> {
+    try {
+      const { reviewId, reply } = reviewReplyDto;
+      const course = await this.findCourseById(courseId);
+      const review = course.reviews.find((review) => review.id === reviewId);
+      if (!review) {
+        throw new NotFoundException(`Review not found`);
+      }
+      const replyObj = {
+        user,
+        text: reply,
+        id: uuid(),
+      };
+      review.replies.push(replyObj);
+      await this.courseRepo.save(course);
       return {
         success: true,
         data: course,
