@@ -16,4 +16,9 @@ export class RedisService {
   async get(key: string): Promise<any> {
     return this.redisClient.get(key);
   }
+
+  // dele
+  async del(key: string): Promise<any> {
+    return this.redisClient.del(key);
+  }
 }

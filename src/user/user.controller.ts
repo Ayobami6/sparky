@@ -8,6 +8,7 @@ import {
   UploadedFile,
   UseInterceptors,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
@@ -68,5 +69,11 @@ export class UserController {
   ): Promise<Message> {
     const { role, userId } = updateRoleDto;
     return await this.userService.updateUserRole(userId, role);
+  }
+
+  @UseGuards(AdminAuthGuard)
+  @Delete('delete/:userId')
+  async deleteUser(@Param('userId') userId: string): Promise<Message> {
+    return await this.userService.deleteUser(userId);
   }
 }

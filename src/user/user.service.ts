@@ -317,4 +317,28 @@ export class UserService {
       this.loggerService.error(error.message, error);
     }
   }
+
+  // delete user
+  async deleteUser(userId: string): Promise<Message> {
+    try {
+      const user = await this.findUserById(userId);
+      if (user) {
+        if (user?.avatar?.publicUrl) {
+          // delete from cloudinary
+          await this.cloudinaryService.delete(user?.avatar?.publicUrl);
+        }
+        await this.userRepository.delete(user);
+        this.redisService.del(user.email);
+        return {
+          success: true,
+          message: 'User deleted successfully',
+        };
+      } else {
+        throw new NotFoundException('User not found');
+      }
+    } catch (error) {
+      this.errorException.throwError(error);
+      this.loggerService.error(error.message, error);
+    }
+  }
 }
