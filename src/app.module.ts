@@ -21,6 +21,7 @@ import { OrderService } from './order/order.service';
 import { NotificationModule } from './notification/notification.module';
 import { CourseService } from './course/course.service';
 import { NotificationService } from './notification/notification.service';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { NotificationService } from './notification/notification.service';
     CourseModule,
     OrderModule,
     NotificationModule,
+    AnalyticsModule,
   ],
   controllers: [AppController, UserController, AuthController],
   providers: [
