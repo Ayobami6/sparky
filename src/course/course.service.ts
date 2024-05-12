@@ -369,4 +369,26 @@ export class CourseService {
       this.errorException.throwError(error);
     }
   }
+
+  // delete course
+
+  async deleteCourse(courseId: string): Promise<Message> {
+    try {
+      const course = await this.findCourseById(courseId);
+      if (!course) throw new NotFoundException('Course Not Found');
+
+      if (course.thumbnail?.public_id) {
+        await this.cloudinaryService.delete(course.thumbnail.public_id);
+      }
+      await this.redisService.del(course.id);
+      await this.courseRepo.delete(course);
+      return {
+        success: true,
+        message: 'Course Deleted Successfully',
+      };
+    } catch (error) {
+      this.loggerService.error(error.message, error);
+      this.errorException.throwError(error);
+    }
+  }
 }

@@ -291,8 +291,8 @@ export class UserService {
         };
       }
     } catch (error) {
-      this.errorException.throwError(error);
       this.loggerService.error(error.message, error);
+      this.errorException.throwError(error);
     }
   }
 
@@ -313,8 +313,8 @@ export class UserService {
         throw new NotFoundException('User not found');
       }
     } catch (error) {
-      this.errorException.throwError(error);
       this.loggerService.error(error.message, error);
+      this.errorException.throwError(error);
     }
   }
 
@@ -337,8 +337,8 @@ export class UserService {
         throw new NotFoundException('User not found');
       }
     } catch (error) {
-      this.errorException.throwError(error);
       this.loggerService.error(error.message, error);
+      this.errorException.throwError(error);
     }
   }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -101,5 +102,12 @@ export class CourseController {
   @Get('all-courses/')
   async allCourses(): Promise<Message> {
     return await this.courseService.getAllCourses();
+  }
+
+  // delete course
+  @UseGuards(AdminAuthGuard)
+  @Delete('delete/:id')
+  async deleteCourse(@Param('id') id: string): Promise<Message> {
+    return await this.courseService.deleteCourse(id);
   }
 }

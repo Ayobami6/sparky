@@ -6,7 +6,13 @@ import {
   ObjectId,
   BeforeInsert,
 } from 'typeorm';
-import { Benefit, CourseContent, Instructor, Review } from './course-types';
+import {
+  Benefit,
+  CourseContent,
+  Instructor,
+  Review,
+  Thumbnail,
+} from './course-types';
 
 @Entity('course')
 export class CourseEntity {
@@ -29,7 +35,7 @@ export class CourseEntity {
   estimatedPrice: number;
 
   @Column({ nullable: true })
-  thumbnail: object;
+  thumbnail: Thumbnail;
 
   @Column()
   tags: string[];
