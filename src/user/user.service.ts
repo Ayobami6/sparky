@@ -267,4 +267,32 @@ export class UserService {
     }
     return user;
   }
+
+  async getAllUsers(): Promise<Message> {
+    try {
+      // get users from redis first
+      const users = await this.redisService.get('users');
+      if (users) {
+        return {
+          success: true,
+          data: JSON.parse(users),
+        };
+      } else {
+        const users = await this.userRepository.find({
+          order: {
+            createdAt: 'DESC',
+          },
+        });
+        // save to redis
+        this.redisService.set('users', JSON.stringify(users));
+        return {
+          success: true,
+          data: users,
+        };
+      }
+    } catch (error) {
+      this.errorException.throwError(error);
+      this.loggerService.error(error.message, error);
+    }
+  }
 }

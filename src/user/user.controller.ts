@@ -16,6 +16,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Message } from './types';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
@@ -50,5 +51,11 @@ export class UserController {
   ): Promise<Message> {
     const { avatar } = avatarBody;
     return await this.userService.changeAvatar(user.id, avatar);
+  }
+
+  @UseGuards(AdminAuthGuard)
+  @Get('all')
+  async getAllUsers(): Promise<Message> {
+    return await this.userService.getAllUsers();
   }
 }

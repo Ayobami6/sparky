@@ -40,7 +40,7 @@ export class CourseController {
     return await this.courseService.editCourse(id, editCourseDto);
   }
 
-  @Get(':id')
+  @Get('for-all/:id')
   async getCourseForAllUsers(@Param('id') id: string): Promise<CourseEntity> {
     return await this.courseService.getCourseForAll(id);
   }
@@ -95,5 +95,11 @@ export class CourseController {
     @Param('id') id: string,
   ): Promise<Message> {
     return await this.courseService.addReplyToReview(user, reviewReplyDto, id);
+  }
+
+  @UseGuards(AdminAuthGuard)
+  @Get('all-courses/')
+  async allCourses(): Promise<Message> {
+    return await this.courseService.getAllCourses();
   }
 }

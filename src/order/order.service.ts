@@ -135,4 +135,20 @@ export class OrderService {
       this.errorException.throwError(error);
     }
   }
+
+  async getAllOrders(): Promise<Message> {
+    try {
+      const orders = await this.orderRepository.find({
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+      return {
+        success: true,
+        data: orders,
+      };
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
 }

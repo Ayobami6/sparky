@@ -353,4 +353,20 @@ export class CourseService {
       this.errorException.throwError(error);
     }
   }
+
+  async getAllCourses(): Promise<Message> {
+    try {
+      const courses = await this.courseRepo.find({
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+      return {
+        success: true,
+        data: courses,
+      };
+    } catch (error) {
+      this.errorException.throwError(error);
+    }
+  }
 }
