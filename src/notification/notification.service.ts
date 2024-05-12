@@ -4,7 +4,7 @@ import { ErrorException } from 'src/utils/error-exceptions';
 import { DataSource } from 'typeorm';
 import { NotificationEntity, Status } from './notification.entity';
 import { Message } from 'src/user/types';
-import { NotificationStatusDto } from './dto/notification-status.dto';
+import cron from 'node-cron';
 
 @Injectable()
 export class NotificationService {
@@ -16,6 +16,7 @@ export class NotificationService {
     private loggerService: LoggerService,
   ) {
     this.notificationRepo = this.dataSource.getRepository(NotificationEntity);
+    this.deleteOldNotificationConJoB();
   }
 
   async getAllNotifications(): Promise<Message> {
@@ -63,5 +64,18 @@ export class NotificationService {
     } catch (error) {
       this.errorException.throwError(error);
     }
+  }
+
+  async deleteOldNotificationConJoB(): Promise<void> {
+    /**
+     * Delete old notification
+     * Deletes Thirty days old notifications from the the database
+     */
+    cron.schedule('*/5 * * * * *', async () => {
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      await this.notificationRepo.deleteMany({
+        $and: [{ createdAt: { $lt: thirtyDaysAgo } }, { status: Status.READ }],
+      });
+    });
   }
 }
