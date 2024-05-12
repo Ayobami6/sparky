@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Put, UseGuards } from '@nestjs/common';
 import { LayoutService } from './layout.service';
 import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
 import { CreateLayoutDto } from './dto/create-layout.dto';
@@ -14,5 +14,10 @@ export class LayoutController {
     @Body() createLayoutDto: CreateLayoutDto,
   ): Promise<Message> {
     return await this.layoutService.createLayout(createLayoutDto);
+  }
+
+  @Put('edit')
+  async editLayout(@Body() createLayoutDto: CreateLayoutDto): Promise<Message> {
+    return await this.layoutService.editLayout(createLayoutDto);
   }
 }
