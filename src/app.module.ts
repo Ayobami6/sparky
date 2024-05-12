@@ -22,6 +22,7 @@ import { NotificationModule } from './notification/notification.module';
 import { CourseService } from './course/course.service';
 import { NotificationService } from './notification/notification.service';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { LayoutModule } from './layout/layout.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     OrderModule,
     NotificationModule,
     AnalyticsModule,
+    LayoutModule,
   ],
   controllers: [AppController, UserController, AuthController],
   providers: [
