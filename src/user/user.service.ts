@@ -100,7 +100,7 @@ export class UserService {
         user.name = name;
         user.avatar = avatar;
         await this.userRepository.save(user);
-        this.redisService.set(user.email, JSON.stringify(user));
+        this.redisService.set(user.email, JSON.stringify(user), 604000);
         return {
           success: true,
           message: 'User updated successfully',
@@ -137,7 +137,7 @@ export class UserService {
         const hashedPassword = await bcrypt.hash(newPassword, salt);
         user.password = hashedPassword;
         await this.userRepository.save(user);
-        this.redisService.set(user.email, JSON.stringify(user));
+        this.redisService.set(user.email, JSON.stringify(user), 604000);
         return {
           success: true,
           message: 'Password updated successfully',
@@ -178,7 +178,7 @@ export class UserService {
             url: (await upload).secure_url,
           };
           await this.userRepository.save(user);
-          this.redisService.set(user.email, JSON.stringify(user));
+          this.redisService.set(user.email, JSON.stringify(user), 604000);
           return {
             success: true,
             message: 'Avatar updated successfully',
@@ -284,7 +284,7 @@ export class UserService {
           },
         });
         // save to redis
-        this.redisService.set('users', JSON.stringify(users));
+        this.redisService.set('users', JSON.stringify(users), 604000);
         return {
           success: true,
           data: users,
@@ -303,7 +303,7 @@ export class UserService {
       if (user) {
         user.role = role;
         await this.userRepository.save(user);
-        this.redisService.set(user.email, JSON.stringify(user));
+        this.redisService.set(user.email, JSON.stringify(user), 604000);
         return {
           success: true,
           message: 'User role updated successfully',

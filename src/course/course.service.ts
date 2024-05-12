@@ -109,7 +109,7 @@ export class CourseService {
         delete course.questions;
         delete course.links;
       });
-      await this.redisService.set(id, JSON.stringify(course));
+      await this.redisService.set(id, JSON.stringify(course), 604000);
       return course;
     } catch (error) {
       this.errorException.throwError(error);
@@ -131,7 +131,7 @@ export class CourseService {
           delete courseData.links;
         });
       });
-      await this.redisService.set('courses', JSON.stringify(courses));
+      await this.redisService.set('courses', JSON.stringify(courses), 604000);
       return courses;
     } catch (error) {
       this.errorException.throwError(error);
