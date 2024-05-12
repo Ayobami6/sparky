@@ -7,6 +7,7 @@ import {
   UseGuards,
   UploadedFile,
   UseInterceptors,
+  Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserEntity } from './user.entity';
@@ -17,6 +18,7 @@ import { ChangePasswordDto } from './dto/change-password.dto';
 import { Message } from './types';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
+import { UpdateUserRoleDto } from './dto/update-user-role.dto';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
@@ -57,5 +59,14 @@ export class UserController {
   @Get('all')
   async getAllUsers(): Promise<Message> {
     return await this.userService.getAllUsers();
+  }
+
+  @UseGuards(AdminAuthGuard)
+  @Put('update-role')
+  async updateUserRole(
+    @Body() updateRoleDto: UpdateUserRoleDto,
+  ): Promise<Message> {
+    const { role, userId } = updateRoleDto;
+    return await this.userService.updateUserRole(userId, role);
   }
 }

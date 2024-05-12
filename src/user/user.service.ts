@@ -295,4 +295,26 @@ export class UserService {
       this.loggerService.error(error.message, error);
     }
   }
+
+  // admin update user role
+  async updateUserRole(userId: string, role: RoleEnum): Promise<Message> {
+    try {
+      const user = await this.findUserById(userId);
+      if (user) {
+        user.role = role;
+        await this.userRepository.save(user);
+        this.redisService.set(user.email, JSON.stringify(user));
+        return {
+          success: true,
+          message: 'User role updated successfully',
+          user: user,
+        };
+      } else {
+        throw new NotFoundException('User not found');
+      }
+    } catch (error) {
+      this.errorException.throwError(error);
+      this.loggerService.error(error.message, error);
+    }
+  }
 }
