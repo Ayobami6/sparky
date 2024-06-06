@@ -48,6 +48,14 @@ export class UserService {
   async createUser(createUserDto: CreateUserDto): Promise<Message> {
     try {
       const { name, email, password } = createUserDto;
+      const userExist = await this.userRepository.findOne({
+        where: {
+          email: email,
+        },
+      });
+      if(userExist) {
+        throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
+      }
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(password, salt);
       const user = {
@@ -83,12 +91,9 @@ export class UserService {
         };
       }
     } catch (error) {
-      this.logger.error(error.message, error.stack);
       this.loggerService.error(error.message, error);
-      throw new InternalServerErrorException({
-        success: false,
-        message: 'Something went wrong, Try again!',
-      });
+      this.errorException.throwError(error)
+      
     }
   }
 
@@ -251,12 +256,8 @@ export class UserService {
         user: savedUser,
       };
     } catch (error) {
-      this.logger.error(error.message, error.stack);
       this.loggerService.error(error.message, error);
-      throw new InternalServerErrorException({
-        success: false,
-        message: 'Something went wrong, Try again!',
-      });
+      this.errorException.throwError(error)
     }
   }
 

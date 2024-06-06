@@ -18,7 +18,7 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new TransformInterceptor());
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 4000;
   await app.listen(PORT);
   logger.log(`Application is running on:  ${await app.getUrl()}`);
 }

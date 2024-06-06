@@ -30,7 +30,7 @@ export class AnalyticsService {
         order: this.orderRepo,
       };
       const repo = catMap[category.toLowerCase()];
-      const last12MonthsData: Array<T> = [];
+      const last12MonthsData: Array<object> = [];
 
       // get current date
       const currentDate = new Date();
