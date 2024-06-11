@@ -19,10 +19,12 @@ import { AuthGuard } from '@nestjs/passport';
 import { Message } from 'src/user/types';
 import { QuestionDto, QuestionReplyDto } from './dto/add-question.dto';
 import { AddReviewDTO, ReviewReplyDto } from './dto/add-review.dto';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller('course')
+@ApiTags('courses')
 export class CourseController {
-  constructor(private readonly courseService: CourseService) {}
+  constructor(private readonly courseService: CourseService) { }
 
   @UseGuards(AdminAuthGuard)
   @Post()
@@ -62,6 +64,7 @@ export class CourseController {
 
   @UseGuards(AuthGuard('jwt'))
   @Put('q/add')
+  @ApiOperation({ summary: 'Add a new question to a course' })
   async addQuestion(
     @Body() questionDto: QuestionDto,
     @GetUser() user: UserEntity,

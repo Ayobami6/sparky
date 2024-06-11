@@ -14,7 +14,9 @@ import { AuthGuard } from '@nestjs/passport';
 import { UserEntity } from './user/user.entity';
 import { GetUser } from './auth/get-user.decorator';
 import { AdminAuthGuard } from './auth/jwt-admin-authguard';
+import { ApiTags } from '@nestjs/swagger';
 @Controller()
+@ApiTags('misc')
 export class AppController {
   constructor(
     private readonly appService: AppService,
@@ -23,7 +25,7 @@ export class AppController {
   ) {}
 
   @Get()
-  getHello(): string {
+  getHello(): any {
     return this.appService.getHello();
   }
 
