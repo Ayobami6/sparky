@@ -6,11 +6,13 @@ import { GetUser } from 'src/auth/get-user.decorator';
 import { UserEntity } from 'src/user/user.entity';
 import { Message } from 'src/user/types';
 import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard('jwt'))
-@Controller('order')
+@Controller('orders')
+@ApiTags('orders')
 export class OrderController {
-  constructor(private orderService: OrderService) {}
+  constructor(private orderService: OrderService) { }
 
   @Post('create')
   async createOrder(

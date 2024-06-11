@@ -53,7 +53,7 @@ export class UserService {
           email: email,
         },
       });
-      if(userExist) {
+      if (userExist) {
         throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
       }
       const salt = await bcrypt.genSalt();
@@ -92,8 +92,7 @@ export class UserService {
       }
     } catch (error) {
       this.loggerService.error(error.message, error);
-      this.errorException.throwError(error)
-      
+      this.errorException.throwError(error);
     }
   }
 

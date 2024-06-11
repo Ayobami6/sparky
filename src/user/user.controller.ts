@@ -20,11 +20,13 @@ import { Message } from './types';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('user')
+@ApiTags('users')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   @Get('user-info')
   async getUserInfo(@GetUser() user: any): Promise<UserEntity> {
