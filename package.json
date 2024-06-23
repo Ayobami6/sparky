@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build && cpx ./src/utils/mails/** ./dist/utils/mails/",
+    "build": "nest build && cpx './src/utils/**/*.ejs' ./dist/utils/",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
