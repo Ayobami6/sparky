@@ -7,12 +7,19 @@ import * as cookieParser from 'cookie-parser';
 import { TransformInterceptor } from './serializers/transformer-interceptors';
 import { VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 
 async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
   // app.use(cookieParser());
-  app.enableCors();
+  const corsOptions: CorsOptions = {
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  };
+  app.enableCors(corsOptions);
   app.enableVersioning({
     type: VersioningType.URI,
     defaultVersion: '1',
