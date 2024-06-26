@@ -172,23 +172,22 @@ export class UserService {
         if (user?.avatar?.publicUrl) {
           // delete from cloudinary
           await this.cloudinaryService.delete(user?.avatar?.publicUrl);
-        } else {
-          const upload = this.cloudinaryService.upload(avatar, {
-            folder: 'avatars',
-            width: 150,
-          });
-          user.avatar = {
-            publicUrl: (await upload).public_id,
-            url: (await upload).secure_url,
-          };
-          await this.userRepository.save(user);
-          this.redisService.set(user.email, JSON.stringify(user), 604000);
-          return {
-            success: true,
-            message: 'Avatar updated successfully',
-            user: user,
-          };
         }
+        const upload = this.cloudinaryService.upload(avatar, {
+          folder: 'avatars',
+          width: 150,
+        });
+        user.avatar = {
+          publicUrl: (await upload).public_id,
+          url: (await upload).secure_url,
+        };
+        await this.userRepository.save(user);
+        this.redisService.set(user.email, JSON.stringify(user), 604000);
+        return {
+          success: true,
+          message: 'Avatar updated successfully',
+          user: user,
+        };
       } else {
         throw new NotFoundException('User not found');
       }
@@ -256,7 +255,7 @@ export class UserService {
       };
     } catch (error) {
       this.loggerService.error(error.message, error);
-      this.errorException.throwError(error)
+      this.errorException.throwError(error);
     }
   }
 
