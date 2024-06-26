@@ -8,11 +8,13 @@ import { TransformInterceptor } from './serializers/transformer-interceptors';
 import { VersioningType } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const logger = new Logger();
   const app = await NestFactory.create(AppModule);
   // app.use(cookieParser());
+  app.use(bodyParser.json({ limit: '10mb' }));
   const corsOptions: CorsOptions = {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
