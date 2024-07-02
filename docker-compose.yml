@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  sparky_backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sparky_backend
+    restart: always
+    environment:
+      - MACHINE=local
+    ports:
+      - '4000:4000'
+    volumes:
+      - .:/sparky_backend/
+      - /sparky_backend/node_modules
