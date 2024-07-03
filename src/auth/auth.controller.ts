@@ -52,7 +52,7 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<any> {
     const loginResponse = await this.authService.loginUser(loginUserDto);
-    const { accessToken, refreshToken } = loginResponse;
+    const { accessToken, refreshToken, user } = loginResponse;
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       path: '/auth/refresh_token',
@@ -68,6 +68,7 @@ export class AuthController {
       message: 'Login Successful',
       accessToken,
       refreshToken,
+      user,
     });
   }
 
