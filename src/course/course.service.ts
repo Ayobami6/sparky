@@ -27,7 +27,7 @@ import {
   NotificationEntity,
   Status,
 } from 'src/notification/notification.entity';
-
+import axios from 'axios';
 @Injectable()
 export class CourseService {
   private errorException = new ErrorException();
@@ -386,6 +386,25 @@ export class CourseService {
         success: true,
         message: 'Course Deleted Successfully',
       };
+    } catch (error) {
+      this.loggerService.error(error.message, error);
+      this.errorException.throwError(error);
+    }
+  }
+  async generateVideoUrl(videoId: string): Promise<any> {
+    try {
+      const response = await axios.post(
+        `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+        { ttl: 300 },
+        {
+          headers: {
+            Authorization: `Apisecret ${this.configService.get('VDCCIPHER_API_KEY')}`,
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+      return await response?.data;
     } catch (error) {
       this.loggerService.error(error.message, error);
       this.errorException.throwError(error);
