@@ -36,8 +36,18 @@ export class AuthService {
       // find the user
       const user = await this.userRepository.findOne({ email: email });
       if (user && (await bcrypt.compare(password, user.password))) {
+        delete user.password;
+        delete user._id;
         this.redisService.set(user.email, JSON.stringify(user), 604000);
-        return this.generateTokens(email, user.id);
+        const { accessToken, refreshToken } = this.generateTokens(
+          email,
+          user.id,
+        );
+        return {
+          refreshToken,
+          accessToken,
+          user,
+        };
       } else {
         throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
       }
@@ -62,10 +72,23 @@ export class AuthService {
         });
         this.userRepository.save(user);
         this.redisService.set(user.email, JSON.stringify(user));
-        return this.generateTokens(email, user.id);
+        const { accessToken, refreshToken } = this.generateTokens(
+          email,
+          user.id,
+        );
+        return {
+          refreshToken,
+          accessToken,
+          user,
+        };
       }
       this.redisService.set(user.email, JSON.stringify(user), 604000);
-      return this.generateTokens(email, user.id);
+      const { accessToken, refreshToken } = this.generateTokens(email, user.id);
+      return {
+        refreshToken,
+        accessToken,
+        user,
+      };
     } catch (error) {
       this.loggerService.error(error.message, error);
       this.logger.error(error.message, error.stack);
