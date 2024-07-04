@@ -20,11 +20,12 @@ import { Message } from 'src/user/types';
 import { QuestionDto, QuestionReplyDto } from './dto/add-question.dto';
 import { AddReviewDTO, ReviewReplyDto } from './dto/add-review.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { GenerateVideoUrlDto } from './dto/generate-videourl.dto';
 
 @Controller('course')
 @ApiTags('courses')
 export class CourseController {
-  constructor(private readonly courseService: CourseService) { }
+  constructor(private readonly courseService: CourseService) {}
 
   @UseGuards(AdminAuthGuard)
   @Post()
@@ -112,5 +113,13 @@ export class CourseController {
   @Delete('delete/:id')
   async deleteCourse(@Param('id') id: string): Promise<Message> {
     return await this.courseService.deleteCourse(id);
+  }
+
+  @Post('generate-videoUrl')
+  async generateVideoUrl(
+    @Body() videoUrlDto: GenerateVideoUrlDto,
+  ): Promise<any> {
+    const { videoId } = videoUrlDto;
+    return await this.courseService.generateVideoUrl(videoId);
   }
 }
