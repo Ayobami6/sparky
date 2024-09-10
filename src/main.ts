@@ -49,6 +49,6 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document); //3
   const PORT = process.env.PORT || 4000;
   await app.listen(PORT);
-  logger.log(`Application is running on:  ${await app.getUrl()}`);
+  logger.log(`Application is running on:  ${await app.getUrl()}/v1`);
 }
 bootstrap();

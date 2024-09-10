@@ -5,7 +5,7 @@ import { CreateLayoutDto } from './dto/create-layout.dto';
 import { Message } from 'src/user/types';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('layout')
+@ApiTags('layouts')
 @Controller('layouts')
 export class LayoutController {
   constructor(private layoutService: LayoutService) {}
