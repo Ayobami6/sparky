@@ -3,8 +3,10 @@ import { LayoutService } from './layout.service';
 import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
 import { CreateLayoutDto } from './dto/create-layout.dto';
 import { Message } from 'src/user/types';
+import { ApiTags } from '@nestjs/swagger';
 
-@Controller('layout')
+@ApiTags('layout')
+@Controller('layouts')
 export class LayoutController {
   constructor(private layoutService: LayoutService) {}
 

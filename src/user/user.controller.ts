@@ -2,11 +2,8 @@ import {
   Body,
   Controller,
   Get,
-  Post,
   Put,
   UseGuards,
-  UploadedFile,
-  UseInterceptors,
   Param,
   Delete,
 } from '@nestjs/common';
@@ -17,18 +14,35 @@ import { AuthGuard } from '@nestjs/passport';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { Message } from './types';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { AdminAuthGuard } from 'src/auth/jwt-admin-authguard';
 import { UpdateUserRoleDto } from './dto/update-user-role.dto';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiBadRequestResponse,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @UseGuards(AuthGuard('jwt'))
-@Controller('user')
+@Controller('users')
 @ApiTags('users')
+@ApiBearerAuth('JWT-auth')
 export class UserController {
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService) {}
 
   @Get('user-info')
+  @ApiResponse({
+    status: 200,
+    description: 'Get current user information',
+  })
+  @ApiBadRequestResponse({
+    status: 400,
+    description: 'Bad Data Provided',
+  })
+  @ApiOperation({
+    summary: 'Get current user information',
+  })
   async getUserInfo(@GetUser() user: any): Promise<UserEntity> {
     return await this.userService.findUserById(user.id);
   }

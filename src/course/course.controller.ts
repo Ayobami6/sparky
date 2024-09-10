@@ -22,7 +22,7 @@ import { AddReviewDTO, ReviewReplyDto } from './dto/add-review.dto';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GenerateVideoUrlDto } from './dto/generate-videourl.dto';
 
-@Controller('course')
+@Controller('courses')
 @ApiTags('courses')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}

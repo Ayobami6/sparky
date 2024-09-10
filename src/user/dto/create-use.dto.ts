@@ -7,10 +7,16 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Avatar } from '../types';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
+  @ApiProperty({
+    type: 'string',
+    format: 'email',
+    example: 'john.doe@example.com',
+  })
   email: string;
 
   @IsNotEmpty()
