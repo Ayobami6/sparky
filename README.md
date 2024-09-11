@@ -19,6 +19,29 @@
 ![GitHub forks](https://img.shields.io/github/forks/Ayobami6/sparky?style=social)
 ![GitHub contributors](https://img.shields.io/github/contributors/Ayobami6/sparky)
 
+
+### Built With
+
+- NestJs
+- Redis
+- Cloudinary
+- MongoDB
+- JWT
+- Docker
+
+### Deployed With
+- Koyeb Serverless Deployment
+
+
+### Postman Documentation
+[Postman Docs](https://documenter.getpostman.com/view/35174244/2sA3drGDot)
+
+### Frontend Repository
+[Repo](https://sparky-frontend.vercel.app)
+
+
+
+
 ![Imgur](https://i.imgur.com/HsW4CoP.png)
 
 ![Imgur](https://i.imgur.com/cLUTDdq.png)
