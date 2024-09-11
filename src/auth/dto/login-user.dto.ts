@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
@@ -10,6 +11,10 @@ export class LoginUserDto {
   @IsNotEmpty()
   @IsEmail()
   @IsString()
+  @ApiProperty({
+    type: 'string',
+    format: 'email',
+  })
   email: string;
 
   @IsNotEmpty()
@@ -19,5 +24,9 @@ export class LoginUserDto {
     /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
     { message: 'Password is too weak' },
   )
+  @ApiProperty({
+    type: 'string',
+    format: 'password',
+  })
   password: string;
 }
