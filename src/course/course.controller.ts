@@ -214,7 +214,7 @@ export class CourseController {
   @Put('review/reply/:id')
   @ApiResponse({
     status: 200,
-    type: Promise<Message>,
+    type: CourseEntity,
   })
   @ApiOperation({
     summary: 'Reply to a review',
@@ -242,8 +242,8 @@ export class CourseController {
     type: [CourseEntity],
   })
   @ApiOperation({
-    summary: 'Delete a review',
-    description: 'Delete a review posted by a user',
+    summary: 'Get All Courses',
+    description: 'Get all courses',
   })
   @ApiBadRequestResponse({
     description: 'Invalid input',
