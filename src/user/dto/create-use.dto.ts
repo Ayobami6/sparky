@@ -7,14 +7,24 @@ import {
   IsOptional,
 } from 'class-validator';
 import { Avatar } from '../types';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
   @IsNotEmpty()
   @IsEmail()
+  @ApiProperty({
+    type: 'string',
+    format: 'email',
+    example: 'john.doe@example.com',
+  })
   email: string;
 
   @IsNotEmpty()
   @IsString()
+  @ApiProperty({
+    type: 'string',
+    example: 'John Doe',
+  })
   name: string;
 
   @MinLength(8)
@@ -24,20 +34,41 @@ export class CreateUserDto {
   )
   @IsNotEmpty()
   @IsString()
+  @ApiProperty({
+    type: 'string',
+    example: 'john.doe@example.com',
+  })
   password: string;
 
   @IsOptional()
+  @ApiProperty({
+    type: 'object',
+    example: { publicUrl: 'https://example.com/avatar.jpg', url: 'avatar.jpg' },
+  })
   avatar: Avatar;
 }
 
 export class SocialAuthDto {
   @IsNotEmpty()
   @IsEmail()
+  @ApiProperty({
+    type: 'string',
+    format: 'email',
+    example: 'john.doe@example.com',
+  })
   email: string;
   @IsNotEmpty()
   @IsString()
+  @ApiProperty({
+    type: 'string',
+    example: 'John Doe',
+  })
   name: string;
 
   @IsOptional()
+  @ApiProperty({
+    type: 'object',
+    example: { publicUrl: 'https://example.com/avatar.jpg', url: 'avatar.jpg' },
+  })
   avatar: Avatar;
 }

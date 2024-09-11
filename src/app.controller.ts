@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   HttpStatus,
+  Redirect,
   Res,
   UnauthorizedException,
   UseGuards,
@@ -25,9 +26,8 @@ export class AppController {
   ) {}
 
   @Get()
-  getHello(): any {
-    return this.appService.getHello();
-  }
+  @Redirect('/docs', 302)
+  getHello(): any {}
 
   @Get('test')
   testServer(@Res() res: Response): any {
