@@ -5,7 +5,8 @@
 
 </div>
 
-## Sparky E-learning app
+## Sparky E-learning app API Backend
+
 
 ![Languages](https://img.shields.io/github/languages/top/Ayobami6/sparky)
 ![GitHub repo size](https://img.shields.io/github/repo-size/Ayobami6/sparky)
